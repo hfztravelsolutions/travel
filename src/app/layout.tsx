@@ -7,10 +7,11 @@ import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/context/authContext';
 import { Toaster } from 'react-hot-toast';
-import { MyProvider } from '@/context/myContext';
+import { MyProvider, useMyContext } from '@/context/myContext';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar';
 import Header from './dashboard/header';
+import GlobalDialog from '@/components/global-dialog';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -65,6 +66,7 @@ export default function RootLayout({
                   <SidebarProvider>
                     <AppSidebar />
                     <SidebarInset>
+                      <GlobalDialog />
                       <Header />
                       {children}
                     </SidebarInset>
