@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useForm, SubmitHandler } from "react-hook-form";
-import MainCard from "../dashboard/mainCard";
-import { toast } from "react-hot-toast";
-import { login } from "./actions";
-import { useMyContext } from "@/context/myContext";
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import MainCard from '../dashboard/mainCard';
+import { toast } from 'react-hot-toast';
+import { login } from './actions';
+import { useMyContext } from '@/context/myContext';
 
 interface LoginFormInputs {
   email: string;
@@ -49,9 +49,9 @@ const LoginForm: React.FC = () => {
     if (!result.success) {
       toast.error(`Login failed: ${result.message}`);
     } else {
-      toast.success("Login successful! Redirecting...");
+      toast.success('Login successful! Redirecting...');
       setTimeout(() => {
-        window.location.href = "/dashboard"; // Redirect after 2 seconds
+        window.location.href = '/dashboard'; // Redirect after 2 seconds
       }, 2000);
     }
   };
@@ -77,7 +77,7 @@ const LoginForm: React.FC = () => {
               <Input
                 id="email"
                 type="email"
-                {...register("email", { required: "Email is required" })}
+                {...register('email', { required: 'Email is required' })}
               />
               {errors.email && (
                 <span className="text-red-500">{errors.email.message}</span>
@@ -99,8 +99,8 @@ const LoginForm: React.FC = () => {
               <Input
                 id="password"
                 type="password"
-                {...register("password", {
-                  required: "Password is required",
+                {...register('password', {
+                  required: 'Password is required',
                 })}
               />
               {errors.password && (
@@ -126,7 +126,7 @@ const LoginForm: React.FC = () => {
 
           <div className="mt-4 text-center">
             <p className="text-sm">
-              Don't have an account?{" "}
+              Don't have an account?{' '}
               <a href="/signup" className="text-blue-500 hover:underline">
                 Sign up
               </a>

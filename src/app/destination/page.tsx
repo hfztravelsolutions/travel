@@ -23,9 +23,18 @@ import {
   EllipsisVertical,
 } from 'lucide-react';
 import ListCard2 from './listCrad2';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { useMyContext } from '@/context/myContext';
+import DestinationModal from './components/destinationModal';
 
 const Page: React.FC = () => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
+  const { globalDialogToggle, setDestinationModal } = useMyContext();
 
   const notifications = [
     {
@@ -47,15 +56,23 @@ const Page: React.FC = () => {
     },
   ];
 
+  const handleButtonClick = () => {
+    setDestinationModal((prevState: { toggle: any }) => ({
+      key: 'add',
+      toggle: !prevState.toggle,
+    }));
+  };
+
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+      <DestinationModal />
       <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
         <div className="col-span-4">
           <div className="flex justify-between items-center mb-3">
             <div>
               <p className="text-1xl font-semibold">Pakej Baru</p>
             </div>
-            <Button>
+            <Button onClick={handleButtonClick}>
               <Plus /> Tambah Pakej Destinasi
             </Button>
           </div>

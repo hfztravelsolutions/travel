@@ -152,14 +152,14 @@ const data = {
       icon: House,
     },
     {
-      name: 'Tempahan',
-      url: 'booking',
-      icon: StretchHorizontal,
-    },
-    {
       name: 'Destinasi',
       url: 'destination',
       icon: Plane,
+    },
+    {
+      name: 'Tempahan',
+      url: 'booking',
+      icon: StretchHorizontal,
     },
     {
       name: 'Kalendar',
