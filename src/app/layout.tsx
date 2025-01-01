@@ -12,6 +12,7 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar';
 import Header from './dashboard/header';
 import GlobalDialog from '@/components/global-dialog';
+import { ApiProvider } from '@/context/apiContext';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -53,32 +54,34 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <MyProvider>
-          <AuthProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <div className="flex">
-                {showSidebar ? (
-                  <SidebarProvider>
-                    <AppSidebar />
-                    <SidebarInset>
-                      <GlobalDialog />
-                      <Header />
-                      {children}
-                    </SidebarInset>
-                  </SidebarProvider>
-                ) : (
-                  children
-                )}
-                <Toaster />
-              </div>
-            </ThemeProvider>
-          </AuthProvider>
-        </MyProvider>
+        <ApiProvider>
+          <MyProvider>
+            <AuthProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <div className="flex">
+                  {showSidebar ? (
+                    <SidebarProvider>
+                      <AppSidebar />
+                      <SidebarInset>
+                        <GlobalDialog />
+                        <Header />
+                        {children}
+                      </SidebarInset>
+                    </SidebarProvider>
+                  ) : (
+                    children
+                  )}
+                  <Toaster />
+                </div>
+              </ThemeProvider>
+            </AuthProvider>
+          </MyProvider>
+        </ApiProvider>
       </body>
     </html>
   );

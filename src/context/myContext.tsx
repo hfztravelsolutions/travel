@@ -12,6 +12,7 @@ interface User {
 interface DestinationModalState {
   key: string;
   toggle: boolean;
+  otherData: Record<string, unknown> | null; // Can be any object or null
 }
 
 // Define the shape of your context data
@@ -46,7 +47,11 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [globalDialogToggle, setGlobalDialogToggle] = useState<boolean>(false);
 
   const [destinationModal, setDestinationModal] =
-    useState<DestinationModalState>({ key: '', toggle: false });
+    useState<DestinationModalState>({
+      key: '',
+      toggle: false,
+      otherData: null,
+    });
 
   return (
     <MyContext.Provider

@@ -43,9 +43,9 @@ import { useMyContext } from '@/context/myContext';
 const data = {
   teams: [
     {
-      name: 'Acme Inc',
+      name: 'BENRAHIM',
       logo: GalleryVerticalEnd,
-      plan: 'Enterprise',
+      plan: 'TRAVEL & TOURS',
     },
     {
       name: 'Acme Corp.',

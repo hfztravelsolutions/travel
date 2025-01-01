@@ -21,7 +21,7 @@ const Page: React.FC = () => {
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-        <div className="col-span-4 ">
+        <div className="col-span-4">
           <MainCard title="Jumlah Pendapatan" showFooter>
             <ChartCard />
           </MainCard>
