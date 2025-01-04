@@ -11,9 +11,9 @@ import ChartCard from './chartCard';
 import ListCard from './listCrad';
 import Header from './header';
 import { ModeToggle } from './modeToggle';
-import UsersTable from './userTable';
 import { logout } from '../login/actions';
 import MainCard from '@/components/mainCard';
+import { BookingTable } from '../booking/components/bookingTable';
 
 const Page: React.FC = () => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
@@ -58,7 +58,7 @@ const Page: React.FC = () => {
       </div>
       <div className="min-h-[100vh] flex-1 rounded-xl md:min-h-min">
         <MainCard title="Tempahan Terkini">
-          <UsersTable />
+          <BookingTable />
         </MainCard>
       </div>
       <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">
