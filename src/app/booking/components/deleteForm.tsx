@@ -7,17 +7,15 @@ import { useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 
 export function DeleteForm() {
-  const { deleteSingleDestination, isLoading } = useApiContext();
-  const { setDestinationModal, destinationModal } = useMyContext();
+  const { deleteSingleBooking, isLoading } = useApiContext();
+  const { setBookingModal, bookingModal } = useMyContext();
 
   // Handle form submission
   const onSubmit = async () => {
-    if (destinationModal.otherData.id) {
-      const result = await deleteSingleDestination(
-        destinationModal.otherData.id
-      );
+    if (bookingModal.otherData.id) {
+      const result = await deleteSingleBooking(bookingModal.otherData.id);
       if (result) {
-        setDestinationModal((prevState) => ({
+        setBookingModal((prevState) => ({
           ...prevState,
           key: null,
           toggle: !prevState.toggle,
@@ -27,10 +25,11 @@ export function DeleteForm() {
   };
 
   const onCancel = async () => {
-    setDestinationModal((prevState) => ({
+    setBookingModal((prevState) => ({
       ...prevState,
       key: null,
       toggle: !prevState.toggle,
+      otherData: null,
     }));
   };
 
@@ -41,7 +40,7 @@ export function DeleteForm() {
           Are you sure you want to delete this destination?
         </h2>
         <p className="text-sm text-muted-foreground leading-snug">
-          <strong>Title:</strong> {destinationModal.otherData.name}
+          <strong>Title:</strong> {bookingModal.otherData?.email}
         </p>
       </div>
       <div className="bg-dark">
@@ -55,9 +54,9 @@ export function DeleteForm() {
           <Button
             onClick={onSubmit}
             variant="destructive"
-            disabled={isLoading.deleteSingleDestination}
+            disabled={isLoading.deleteSingleBooking}
           >
-            {isLoading.deleteSingleDestination ? (
+            {isLoading.deleteSingleBooking ? (
               <>
                 <Loader2 className="animate-spin mr-2" />
                 Deleting...

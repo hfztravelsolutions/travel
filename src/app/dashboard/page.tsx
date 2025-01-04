@@ -12,8 +12,8 @@ import ListCard from './listCrad';
 import Header from './header';
 import { ModeToggle } from './modeToggle';
 import UsersTable from './userTable';
-import MainCard from './mainCard';
 import { logout } from '../login/actions';
+import MainCard from '@/components/mainCard';
 
 const Page: React.FC = () => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());

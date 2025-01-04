@@ -15,6 +15,18 @@ interface DestinationModalState {
   otherData: Record<string, unknown> | null; // Can be any object or null
 }
 
+interface CalendarModalState {
+  key: string;
+  toggle: boolean;
+  otherData: Record<string, unknown> | null; // Can be any object or null
+}
+
+interface BookingModalState {
+  key: string;
+  toggle: boolean;
+  otherData: Record<string, unknown> | null; // Can be any object or null
+}
+
 // Define the shape of your context data
 interface MyContextType {
   stringData: string | null;
@@ -29,6 +41,10 @@ interface MyContextType {
   setGlobalDialogToggle: (data: boolean) => void;
   destinationModal: DestinationModalState; // Updated type
   setDestinationModal: (data: DestinationModalState) => void; // Updated setter type
+  calendarModal: CalendarModalState; // Updated type
+  setCalendarModal: (data: CalendarModalState) => void; // Updated setter type
+  bookingModal: BookingModalState; // Updated type
+  setBookingModal: (data: BookingModalState) => void; // Updated setter type
 }
 
 const MyContext = createContext<MyContextType | undefined>(undefined);
@@ -53,6 +69,18 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
       otherData: null,
     });
 
+  const [calendarModal, setCalendarModal] = useState<DestinationModalState>({
+    key: '',
+    toggle: false,
+    otherData: null,
+  });
+
+  const [bookingModal, setBookingModal] = useState<BookingModalState>({
+    key: '',
+    toggle: false,
+    otherData: null,
+  });
+
   return (
     <MyContext.Provider
       value={{
@@ -68,6 +96,10 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         setGlobalDialogToggle,
         destinationModal,
         setDestinationModal,
+        calendarModal,
+        setCalendarModal,
+        bookingModal,
+        setBookingModal,
       }}
     >
       {children}

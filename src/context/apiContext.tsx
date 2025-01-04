@@ -4,6 +4,13 @@ import {
   addSingleDestinationApi,
   editSingleDestinationApi,
   deleteSingleDestinationApi,
+  addSingleCalendarApi,
+  editSingleCalendarApi,
+  deleteSingleCalendarApi,
+  getCalendarApi,
+  addSingleBookingApi,
+  getBookingApi,
+  deleteSingleBookingApi,
 } from '@/api/global/actions';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import toast from 'react-hot-toast';
@@ -11,9 +18,16 @@ import toast from 'react-hot-toast';
 const API_NAMES = {
   FETCH_USER_DATA: 'fetchUserData',
   FETCH_DESTINATION: 'fetchDestination',
+  FETCH_CALENDAR: 'fetchCalendar',
+  FETCH_BOOKING: 'fetchBooking',
   ADD_SINGLE_DESTINATION: 'addSingleDestination',
   EDIT_SINGLE_DESTINATION: 'editSingleDestination',
   DELETE_SINGLE_DESTINATION: 'deleteSingleDestination',
+  ADD_SINGLE_CALENDAR: 'addSingleCalendar',
+  EDIT_SINGLE_CALENDAR: 'editSingleCalendar',
+  DELETE_SINGLE_CALENDAR: 'deleteSingleCalendar',
+  ADD_SINGLE_BOOKING: 'addSingleBooking',
+  DELETE_SINGLE_BOOKING: 'deleteSingleBooking',
 };
 
 const ApiContext = createContext<ApiContext | undefined>(undefined);
@@ -25,6 +39,13 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({
   const [destinationData, setDestinationData] = useState<
     Record<string, any>[] | null
   >(null);
+  const [calendarData, setCalendarData] = useState<
+    Record<string, any>[] | null
+  >(null);
+  const [bookingData, setBookingData] = useState<Record<string, any>[] | null>(
+    null
+  );
+
   const [isLoading, setIsLoading] = useState<Record<string, boolean>>({});
 
   const setLoading = (apiName: string, loading: boolean) => {
@@ -71,16 +92,32 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({
     );
   };
 
+  const fetchCalendar = () => {
+    fetchData(
+      () => getCalendarApi({ userId: userData?.id }),
+      setCalendarData,
+      API_NAMES.FETCH_CALENDAR
+    );
+  };
+
+  const fetchBooking = () => {
+    fetchData(
+      () => getBookingApi({ userId: userData?.id }),
+      setBookingData,
+      API_NAMES.FETCH_BOOKING
+    );
+  };
+
   const addSingleDestination = async (params) => {
     return await fetchData(
       () => addSingleDestinationApi({ ...params, userId: userData?.id }),
       (data) => {
         if (destinationData) {
           setDestinationData([data, ...destinationData]);
-          toast.success('Success!');
         } else {
           setDestinationData([data]);
         }
+        toast.success('Success!');
       },
       API_NAMES.ADD_SINGLE_DESTINATION
     );
@@ -92,11 +129,13 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({
       (data) => {
         if (destinationData) {
           const updatedDestinations = destinationData.map((destination) =>
-            destination.id === id ? { ...destination, ...data } : destination
+            String(destination.id) === String(id)
+              ? { ...destination, ...data }
+              : destination
           );
           setDestinationData(updatedDestinations);
-          toast.success('Updated!');
         }
+        toast.success('Updated!');
       },
       API_NAMES.EDIT_SINGLE_DESTINATION
     );
@@ -108,13 +147,96 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({
       (data) => {
         if (destinationData) {
           const updatedDestinations = destinationData.filter(
-            (destination) => destination.id !== id
+            (destination) => String(destination.id) !== String(id)
           );
+
           setDestinationData(updatedDestinations);
-          toast.success('Deleted!');
         }
+        toast.success('Deleted!');
       },
       API_NAMES.DELETE_SINGLE_DESTINATION
+    );
+  };
+
+  const addSingleCalendar = async (params) => {
+    return await fetchData(
+      () => addSingleCalendarApi({ ...params, userId: userData?.id }),
+      (data) => {
+        if (calendarData) {
+          setCalendarData([data, ...calendarData]);
+        } else {
+          setCalendarData([data]);
+        }
+        toast.success('Success!');
+      },
+      API_NAMES.ADD_SINGLE_CALENDAR
+    );
+  };
+
+  const editSingleCalendar = async (id: string, params) => {
+    return await fetchData(
+      () => editSingleCalendarApi({ id, ...params }),
+      (data) => {
+        if (calendarData) {
+          const updatedCalendars = calendarData.map((calendar) =>
+            String(calendar.id) === String(id)
+              ? { ...calendar, ...data }
+              : calendar
+          );
+          setCalendarData(updatedCalendars);
+        }
+        toast.success('Updated!');
+      },
+      API_NAMES.EDIT_SINGLE_CALENDAR
+    );
+  };
+
+  const deleteSingleCalendar = async (id: string) => {
+    return await fetchData(
+      () => deleteSingleCalendarApi({ id }),
+      (data) => {
+        if (calendarData) {
+          const updatedCalendars = calendarData.filter(
+            (calendar) => String(calendar.id) !== String(id)
+          );
+
+          setCalendarData(updatedCalendars);
+        }
+        toast.success('Deleted!');
+      },
+      API_NAMES.DELETE_SINGLE_CALENDAR
+    );
+  };
+
+  const addSingleBooking = async (params) => {
+    return await fetchData(
+      () => addSingleBookingApi({ ...params, userId: userData?.id }),
+      (data) => {
+        if (bookingData) {
+          setBookingData([data, ...bookingData]);
+        } else {
+          setBookingData([data]);
+        }
+        toast.success('Success!');
+      },
+      API_NAMES.ADD_SINGLE_BOOKING
+    );
+  };
+
+  const deleteSingleBooking = async (id: string) => {
+    return await fetchData(
+      () => deleteSingleBookingApi({ id }),
+      (data) => {
+        if (bookingData) {
+          const updatedBookings = bookingData.filter(
+            (booking) => String(booking.id) !== String(id)
+          );
+
+          setBookingData(updatedBookings);
+        }
+        toast.success('Deleted!');
+      },
+      API_NAMES.DELETE_SINGLE_BOOKING
     );
   };
 
@@ -129,9 +251,20 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({
         setLoading,
         fetchUser,
         fetchDestination,
+        fetchCalendar,
+        fetchBooking,
+        setCalendarData,
+        calendarData,
         addSingleDestination,
         editSingleDestination,
-        deleteSingleDestination, // Provide the new method in context
+        deleteSingleDestination,
+        addSingleCalendar,
+        editSingleCalendar,
+        deleteSingleCalendar,
+        addSingleBooking,
+        setBookingData,
+        bookingData,
+        deleteSingleBooking,
       }}
     >
       {children}
