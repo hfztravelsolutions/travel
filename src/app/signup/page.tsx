@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useForm, SubmitHandler } from "react-hook-form";
-import MainCard from "../dashboard/mainCard";
-import { toast } from "react-hot-toast";
-import { signup } from "./actions";
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
+import { signup } from './actions';
+import MainCard from '@/components/mainCard';
 
 interface SignupFormInputs {
   email: string;
@@ -27,9 +27,9 @@ const SignupForm: React.FC = () => {
     if (!result.success) {
       toast.error(`Signup failed: ${result.message}`);
     } else {
-      toast.success("Signup successful! Please check your email to verify.");
+      toast.success('Signup successful! Please check your email to verify.');
       setTimeout(() => {
-        window.location.href = "/login"; // Redirect after 2 seconds
+        window.location.href = '/login'; // Redirect after 2 seconds
       }, 4000);
     }
   };
@@ -47,7 +47,7 @@ const SignupForm: React.FC = () => {
               <Input
                 id="email"
                 type="email"
-                {...register("email", { required: "Email is required" })}
+                {...register('email', { required: 'Email is required' })}
               />
               {errors.email && (
                 <span className="text-red-500">{errors.email.message}</span>
@@ -58,11 +58,11 @@ const SignupForm: React.FC = () => {
               <Input
                 id="password"
                 type="password"
-                {...register("password", {
-                  required: "Password is required",
+                {...register('password', {
+                  required: 'Password is required',
                   minLength: {
                     value: 6,
-                    message: "Password must be at least 6 characters long",
+                    message: 'Password must be at least 6 characters long',
                   },
                 })}
               />
@@ -89,7 +89,7 @@ const SignupForm: React.FC = () => {
 
           <div className="mt-4 text-center">
             <p className="text-sm">
-              Already have an account?{" "}
+              Already have an account?{' '}
               <a href="/login" className="text-blue-500 hover:underline">
                 Login
               </a>

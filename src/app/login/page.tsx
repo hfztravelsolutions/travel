@@ -5,10 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import MainCard from '../dashboard/mainCard';
 import { toast } from 'react-hot-toast';
 import { login } from './actions';
 import { useMyContext } from '@/context/myContext';
+import MainCard from '@/components/mainCard';
 
 interface LoginFormInputs {
   email: string;
