@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import MainCard from './mainCard';
+import MainCard from '../../components/mainCard';
 import { Button } from '@/components/ui/button';
 import {
   Pencil,

@@ -7,7 +7,6 @@ import { AppSidebar } from '@/components/app-sidebar';
 import { toast } from 'react-hot-toast';
 import { Calendar } from '@/components/ui/calendar';
 import ChartCard from './chartCard';
-import UsersTable from './userTable';
 import MainCard from './mainCard';
 import { logout } from '../login/actions';
 import {

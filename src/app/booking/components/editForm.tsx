@@ -26,6 +26,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { countriesOptions } from '@/components/constant/dropdown';
 import { useApiContext } from '@/context/apiContext';
 import { useMyContext } from '@/context/myContext';
+import { useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 
 // Define the schema for validation using Zod
@@ -70,9 +71,9 @@ const formSchema = z.object({
     .nonempty({ message: 'At least one feature is required.' }),
 });
 
-export function AddForm() {
-  const { addSingleDestination } = useApiContext();
-  const { setDestinationModal } = useMyContext();
+export function EditForm() {
+  const { addSingleDestination, editSingleDestination } = useApiContext();
+  const { setDestinationModal, destinationModal } = useMyContext();
 
   // Initialize the form with react-hook-form
   const form = useForm({
@@ -89,6 +90,36 @@ export function AddForm() {
     },
   });
 
+  useEffect(() => {
+    if (destinationModal.otherData) {
+      const {
+        name,
+        country,
+        description,
+        price,
+        isFeatured,
+        day_count,
+        night_count,
+        features,
+      } = destinationModal.otherData;
+
+      // Map existing data to the form
+      form.setValue('name', name);
+      form.setValue('description', description);
+      form.setValue('price', price);
+      form.setValue('isFeatured', isFeatured);
+      form.setValue('day_count', day_count);
+      form.setValue('night_count', night_count);
+
+      setTimeout(() => {
+        form.setValue('country', country);
+        if (features && features.length > 0) {
+          form.setValue('features', features);
+        }
+      }, 500);
+    }
+  }, []);
+
   const { control } = form;
 
   const {
@@ -102,13 +133,18 @@ export function AddForm() {
 
   // Handle form submission
   const onSubmit = async (data) => {
-    const result = await addSingleDestination(data);
+    const result = await editSingleDestination(
+      destinationModal.otherData.id,
+      data
+    );
     if (result) {
-      setDestinationModal((prevState) => ({
-        ...prevState,
-        key: null,
-        toggle: !prevState.toggle,
-      }));
+      setTimeout(() => {
+        setDestinationModal((prevState) => ({
+          ...prevState,
+          key: null,
+          toggle: !prevState.toggle,
+        }));
+      }, 500);
     }
   };
 
@@ -131,7 +167,6 @@ export function AddForm() {
             </FormItem>
           )}
         />
-
         {/* Country Selection Field */}
         <FormField
           control={form.control}
@@ -139,7 +174,7 @@ export function AddForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Country</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a country" />
@@ -160,7 +195,6 @@ export function AddForm() {
             </FormItem>
           )}
         />
-
         {/* Description Field */}
         <FormField
           control={form.control}
@@ -274,7 +308,6 @@ export function AddForm() {
             </FormItem>
           )}
         />
-
         {/* Day and Night Count Fields Side by Side */}
         <div className="flex space-x-4">
           {/* Day Count Field */}
@@ -333,7 +366,6 @@ export function AddForm() {
             )}
           />
         </div>
-
         {/* isFeatured Settings Checkbox */}
         <FormField
           control={form.control}
@@ -356,13 +388,11 @@ export function AddForm() {
             </FormItem>
           )}
         />
-
-        <div className="flex justify-end space-x-2">
-          <Button type="submit">Submit</Button>
-        </div>
+        {/* Submit Button */}
+        <Button type="submit">Submit</Button>
       </form>
     </Form>
   );
 }
 
-export default AddForm;
+export default EditForm;
