@@ -238,7 +238,7 @@ export async function getBookingApi(params: { userId: string }) {
 
   const { data, error } = await supabase
     .from('booking')
-    .select('*, profile (*)')
+    .select('*, profile (*), destination (*)')
     .eq('user_uuid', params.userId)
     .order('created_at', { ascending: false });
 
@@ -251,6 +251,8 @@ export async function getBookingApi(params: { userId: string }) {
     email: item.profile?.email || '',
     created_at: item.created_at,
     destination_id: item.destination_id,
+    username: item.profile?.username || '',
+    destination_name: item.destination?.name || '',
   }));
 
   return { success: true, data: transformedData };
@@ -270,7 +272,7 @@ export async function addSingleBookingApi(params: {
       destination_id,
       user_uuid: userId,
     })
-    .select('*, profile(*)')
+    .select('*, profile (*), destination (*)')
     .single();
 
   if (error) {
@@ -282,6 +284,8 @@ export async function addSingleBookingApi(params: {
     email: data.profile?.email || '',
     created_at: data.created_at,
     destination_id: data.destination_id,
+    username: data.profile?.username || '',
+    destination_name: data.destination?.name || '',
   };
 
   return { success: true, data: transformedData };
@@ -321,12 +325,21 @@ export async function editSingleBookingApi(params: {
       destination_id,
     })
     .eq('id', id)
-    .select()
+    .select('*, profile (*), destination (*)')
     .single();
 
   if (error) {
     return { success: false, message: error.message };
   }
 
-  return { success: true, data };
+  const transformedData = {
+    id: data.id,
+    email: data.profile?.email || '',
+    created_at: data.created_at,
+    destination_id: data.destination_id,
+    username: data.profile?.username || '',
+    destination_name: data.destination?.name || '',
+  };
+
+  return { success: true, data: transformedData };
 }
