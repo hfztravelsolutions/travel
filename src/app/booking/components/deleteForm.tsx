@@ -37,7 +37,7 @@ export function DeleteForm() {
     <div className="grid gap-3">
       <div>
         <h2 className="text-1xl">
-          Are you sure you want to delete this destination?
+          Are you sure you want to delete this record?
         </h2>
         <p className="text-sm text-muted-foreground leading-snug">
           <strong>Title:</strong> {bookingModal.otherData?.email}

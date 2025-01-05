@@ -11,6 +11,7 @@ import {
   addSingleBookingApi,
   getBookingApi,
   deleteSingleBookingApi,
+  editSingleBookingApi,
 } from '@/api/global/actions';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import toast from 'react-hot-toast';
@@ -28,6 +29,7 @@ const API_NAMES = {
   DELETE_SINGLE_CALENDAR: 'deleteSingleCalendar',
   ADD_SINGLE_BOOKING: 'addSingleBooking',
   DELETE_SINGLE_BOOKING: 'deleteSingleBooking',
+  EDIT_SINGLE_BOOKING: 'editSingleBooking',
 };
 
 const ApiContext = createContext<ApiContext | undefined>(undefined);
@@ -240,6 +242,24 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({
     );
   };
 
+  const editSingleBooking = async (id: string, params) => {
+    return await fetchData(
+      () => editSingleBookingApi({ id, ...params }),
+      (data) => {
+        if (bookingData) {
+          const updatedBookings = bookingData.map((booking) =>
+            String(booking.id) === String(id)
+              ? { ...booking, ...data }
+              : booking
+          );
+          setBookingData(updatedBookings);
+        }
+        toast.success('Updated!');
+      },
+      API_NAMES.EDIT_SINGLE_BOOKING
+    );
+  };
+
   return (
     <ApiContext.Provider
       value={{
@@ -265,6 +285,7 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({
         setBookingData,
         bookingData,
         deleteSingleBooking,
+        editSingleBooking,
       }}
     >
       {children}

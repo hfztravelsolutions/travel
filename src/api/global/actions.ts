@@ -249,6 +249,8 @@ export async function getBookingApi(params: { userId: string }) {
   const transformedData = data.map((item) => ({
     id: item.id,
     email: item.profile?.email || '',
+    created_at: item.created_at,
+    destination_id: item.destination_id,
   }));
 
   return { success: true, data: transformedData };
@@ -271,7 +273,6 @@ export async function addSingleBookingApi(params: {
     .select('*, profile(*)')
     .single();
 
-  console.log('data', data);
   if (error) {
     return { success: false, message: error.message };
   }
@@ -279,6 +280,8 @@ export async function addSingleBookingApi(params: {
   const transformedData = {
     id: data.id,
     email: data.profile?.email || '',
+    created_at: data.created_at,
+    destination_id: data.destination_id,
   };
 
   return { success: true, data: transformedData };
@@ -292,6 +295,31 @@ export async function deleteSingleBookingApi(params: { id: string }) {
   const { data, error } = await supabase
     .from('booking')
     .delete()
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    return { success: false, message: error.message };
+  }
+
+  return { success: true, data };
+}
+
+export async function editSingleBookingApi(params: {
+  id: string;
+  country?: string;
+  name?: string;
+}) {
+  const supabase = await createClient();
+
+  const { id, destination_id } = params;
+
+  const { data, error } = await supabase
+    .from('booking')
+    .update({
+      destination_id,
+    })
     .eq('id', id)
     .select()
     .single();

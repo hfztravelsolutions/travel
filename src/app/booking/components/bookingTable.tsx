@@ -113,6 +113,15 @@ export function BookingTable() {
     }));
   };
 
+  const handleEditItem = (params) => {
+    setBookingModal((prevState: { toggle: any }) => ({
+      ...prevState,
+      key: 'edit',
+      toggle: !prevState.toggle,
+      otherData: params,
+    }));
+  };
+
   const columns: ColumnDef<Payment>[] = [
     {
       id: 'select',
@@ -199,13 +208,18 @@ export function BookingTable() {
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => {
-                  console.log('asd', row.original);
                   handleDeleteItem(row.original);
                 }}
               >
                 Delete
               </DropdownMenuItem>
-              <DropdownMenuItem>View payment details</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  handleEditItem(row.original);
+                }}
+              >
+                Edit
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );
