@@ -48,7 +48,9 @@ const Page: React.FC = () => {
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
       <BookingModal />
-      <BookingChart />
+      <div className="h-300">
+        <BookingChart />
+      </div>
       <MainCard
         title="Tempahan Terkini"
         rightView={

@@ -38,6 +38,7 @@ import {
 } from '@/components/ui/table';
 import { useApiContext } from '@/context/apiContext';
 import { useMyContext } from '@/context/myContext';
+import { inviteStatusOptions } from '@/constant/dropdown';
 
 export type Payment = {
   id: string;
@@ -46,7 +47,7 @@ export type Payment = {
   email: string;
 };
 
-export function BookingTable() {
+export function GuiderTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -55,17 +56,17 @@ export function BookingTable() {
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const { userData, fetchBooking, bookingData } = useApiContext();
-  const { setBookingModal, setDestinationModal } = useMyContext();
+  const { userData, fetchGuider, guiderData } = useApiContext();
+  const { setGuiderModal } = useMyContext();
 
   React.useEffect(() => {
     if (userData) {
-      fetchBooking();
+      fetchGuider();
     }
   }, [userData]);
 
   const handleDeleteItem = (params) => {
-    setBookingModal((prevState: { toggle: any }) => ({
+    setGuiderModal((prevState: { toggle: any }) => ({
       ...prevState,
       key: 'delete',
       toggle: !prevState.toggle,
@@ -74,7 +75,7 @@ export function BookingTable() {
   };
 
   const handleEditItem = (params) => {
-    setBookingModal((prevState: { toggle: any }) => ({
+    setGuiderModal((prevState: { toggle: any }) => ({
       ...prevState,
       key: 'edit',
       toggle: !prevState.toggle,
@@ -106,13 +107,6 @@ export function BookingTable() {
       enableHiding: false,
     },
     {
-      accessorKey: 'invoice_id',
-      header: 'Invoice',
-      cell: ({ row }) => (
-        <div className="capitalize">{row.getValue('invoice_id')}</div>
-      ),
-    },
-    {
       accessorKey: 'email',
       header: ({ column }) => {
         return (
@@ -120,16 +114,27 @@ export function BookingTable() {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           >
-            Customer
+            Name
             <ArrowUpDown />
           </Button>
         );
       },
       cell: ({ row }) => (
         <div className="lowercase">
-          <div>{row.original?.username}</div>
-          <div style={{ fontSize: '0.875em', color: '#555' }}>
-            {row.getValue('email')}
+          <div className="flex items-center text-sm">
+            <img
+              src="https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0"
+              alt="Profile"
+              className="rounded-full w-8 h-8 mr-3" // Adjusted margin for better spacing
+            />
+            <div>
+              <strong className="block">
+                {row.original?.profile?.username}
+              </strong>
+              <span className="text-muted-foreground">
+                {row.getValue('email')}
+              </span>
+            </div>
           </div>
         </div>
       ),
@@ -150,31 +155,39 @@ export function BookingTable() {
     {
       accessorKey: 'status',
       header: 'Status',
-      cell: ({ row }) => (
-        <div className="capitalize">
-          <Badge variant="secondary">Paid</Badge>
-        </div>
-      ),
-    },
-    {
-      accessorKey: 'destination_name',
-      header: ({ column }) => {
+      cell: ({ row }) => {
+        // Find the corresponding label for the current status
+        const currentStatus = row.original.status;
+        const statusLabel =
+          inviteStatusOptions.find((option) => option.value === currentStatus)
+            ?.label || currentStatus;
+
         return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            Trip
-            <ArrowUpDown />
-          </Button>
+          <div className="capitalize">
+            <Badge variant="secondary">{statusLabel}</Badge>
+          </div>
         );
       },
-      cell: ({ row }) => (
-        <div className="lowercase">
-          <Badge variant="secondary">{row.getValue('destination_name')}</Badge>
-        </div>
-      ),
     },
+    // {
+    //   accessorKey: 'destination_name',
+    //   header: ({ column }) => {
+    //     return (
+    //       <Button
+    //         variant="ghost"
+    //         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+    //       >
+    //         Trip
+    //         <ArrowUpDown />
+    //       </Button>
+    //     );
+    //   },
+    //   cell: ({ row }) => (
+    //     <div className="lowercase">
+    //       <Badge variant="secondary">{row.getValue('destination_name')}</Badge>
+    //     </div>
+    //   ),
+    // },
     // {
     //   accessorKey: 'email',
     //   header: ({ column }) => {
@@ -223,11 +236,11 @@ export function BookingTable() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
+              {/* <DropdownMenuItem
                 onClick={() => navigator.clipboard.writeText(payment.id)}
               >
                 Copy payment ID
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => {
@@ -236,13 +249,13 @@ export function BookingTable() {
               >
                 Delete
               </DropdownMenuItem>
-              <DropdownMenuItem
+              {/* <DropdownMenuItem
                 onClick={() => {
                   handleEditItem(row.original);
                 }}
               >
                 Edit
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -251,7 +264,7 @@ export function BookingTable() {
   ];
 
   const table = useReactTable({
-    data: bookingData || [],
+    data: guiderData || [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

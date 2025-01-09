@@ -27,6 +27,12 @@ interface BookingModalState {
   otherData: Record<string, unknown> | null; // Can be any object or null
 }
 
+interface GuiderModalState {
+  key: string;
+  toggle: boolean;
+  otherData: Record<string, unknown> | null; // Can be any object or null
+}
+
 // Define the shape of your context data
 interface MyContextType {
   stringData: string | null;
@@ -45,6 +51,8 @@ interface MyContextType {
   setCalendarModal: (data: CalendarModalState) => void; // Updated setter type
   bookingModal: BookingModalState; // Updated type
   setBookingModal: (data: BookingModalState) => void; // Updated setter type
+  guiderModal: GuiderModalState; // Updated type
+  setGuiderModal: (data: GuiderModalState) => void; // Updated setter type
 }
 
 const MyContext = createContext<MyContextType | undefined>(undefined);
@@ -81,6 +89,12 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     otherData: null,
   });
 
+  const [guiderModal, setGuiderModal] = useState<GuiderModalState>({
+    key: '',
+    toggle: false,
+    otherData: null,
+  });
+
   return (
     <MyContext.Provider
       value={{
@@ -100,6 +114,8 @@ export const MyProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         setCalendarModal,
         bookingModal,
         setBookingModal,
+        guiderModal,
+        setGuiderModal,
       }}
     >
       {children}

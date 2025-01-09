@@ -3,7 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { z } from 'zod';
-import { PlusCircle, Trash2 } from 'lucide-react';
+import { PlusCircle, Trash2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -23,11 +23,13 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { countriesOptions } from '@/components/constant/dropdown';
+import { countriesOptions } from '@/constant/dropdown';
 import { useApiContext } from '@/context/apiContext';
 import { useMyContext } from '@/context/myContext';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import toast from 'react-hot-toast';
+import imageCompression from 'browser-image-compression';
 
 // Define the schema for validation using Zod
 const formSchema = z.object({
@@ -40,25 +42,16 @@ const formSchema = z.object({
   description: z.string().max(500, {
     message: 'Description must be at most 500 characters.',
   }),
-  price: z
-    .number()
-    .min(0, {
-      message: 'Price must be a positive number.',
-    })
-    .nullable(),
+  price: z.number().min(0, {
+    message: 'Price must be a positive number.',
+  }),
   isFeatured: z.boolean(),
-  day_count: z
-    .number()
-    .min(1, {
-      message: 'Day count must be at least 1.',
-    })
-    .nullable(),
-  night_count: z
-    .number()
-    .min(1, {
-      message: 'Night count must be at least 1.',
-    })
-    .nullable(),
+  day_count: z.number().min(1, {
+    message: 'Day count must be at least 1.',
+  }),
+  night_count: z.number().min(1, {
+    message: 'Night count must be at least 1.',
+  }),
   features: z
     .array(
       z.object({
@@ -69,11 +62,15 @@ const formSchema = z.object({
       })
     )
     .nonempty({ message: 'At least one feature is required.' }),
+  image: z.any().refine((file) => file instanceof File, {
+    message: 'Please upload an image.',
+  }),
 });
 
 export function EditForm() {
-  const { addSingleDestination, editSingleDestination } = useApiContext();
+  const { editSingleDestination, isLoading, setLoading } = useApiContext();
   const { setDestinationModal, destinationModal } = useMyContext();
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   // Initialize the form with react-hook-form
   const form = useForm({
@@ -87,6 +84,7 @@ export function EditForm() {
       day_count: null, // Default value for day_count
       night_count: null, // Default value for night_count
       features: [{ title: '', description: '' }],
+      image: '',
     },
   });
 
@@ -101,6 +99,7 @@ export function EditForm() {
         day_count,
         night_count,
         features,
+        image_1_url,
       } = destinationModal.otherData;
 
       // Map existing data to the form
@@ -110,6 +109,12 @@ export function EditForm() {
       form.setValue('isFeatured', isFeatured);
       form.setValue('day_count', day_count);
       form.setValue('night_count', night_count);
+
+      if (image_1_url) {
+        setPreviewImage(
+          `${process.env.NEXT_PUBLIC_SUPABASE_URL}/${process.env.NEXT_PUBLIC_STORAGE_DIRECTORY}/${image_1_url}`
+        );
+      }
 
       setTimeout(() => {
         form.setValue('country', country);
@@ -131,22 +136,49 @@ export function EditForm() {
     name: 'features',
   });
 
-  // Handle form submission
   const onSubmit = async (data) => {
-    const result = await editSingleDestination(
-      destinationModal.otherData.id,
-      data
-    );
-    if (result) {
-      setTimeout(() => {
+    let compressedImage = null;
+
+    // Compress the image to 15KB max if available
+    if (data.image && data.image instanceof File) {
+      try {
+        setLoading('editSingleDestination', true);
+        const imageFile = data.image;
+        const options = {
+          maxSizeMB: 0.015, // Max size in MB (15 KB)
+          maxWidthOrHeight: 1000, // Max width or height of the image
+          useWebWorker: true, // Use a web worker for faster compression
+        };
+        compressedImage = await imageCompression(imageFile, options);
+      } catch (error) {
+        console.error('Error compressing image:', error);
+        toast.error('Error compressing image');
+        setLoading('editSingleDestination', false);
+      }
+    }
+
+    if (compressedImage) {
+      const result = await editSingleDestination(
+        destinationModal.otherData.id,
+        {
+          ...data,
+          image: compressedImage,
+        }
+      );
+
+      if (result) {
         setDestinationModal((prevState) => ({
           ...prevState,
           key: null,
           toggle: !prevState.toggle,
         }));
-      }, 500);
+      }
+    } else {
+      toast.error('No image to compress');
     }
   };
+
+  const fileInputRef = useRef(null);
 
   return (
     <Form {...form}>
@@ -212,6 +244,59 @@ export function EditForm() {
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="image"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Upload Image</FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef} // Attach ref
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      field.onChange(file); // Pass the file to react-hook-form
+                      setPreviewImage(URL.createObjectURL(file)); // Create preview URL
+                    }
+                  }}
+                />
+              </FormControl>
+              <FormDescription>
+                Upload an image for this destination.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {previewImage && (
+          <div className="mt-4 relative w-32 h-32">
+            {/* Image Preview */}
+            <img
+              src={previewImage}
+              alt="Preview"
+              className="w-full h-full object-cover rounded-md"
+            />
+            {/* Reset Icon */}
+            <button
+              type="button"
+              onClick={() => {
+                setPreviewImage(null); // Reset the preview image
+                form.setValue('image', null); // Clear the form value
+                if (fileInputRef.current) {
+                  fileInputRef.current.value = ''; // Clear file input
+                }
+              }}
+              className="absolute top-1 right-1 bg-white text-red-500 p-1 rounded-full shadow hover:bg-red-100"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
+        )}
 
         <FormItem>
           <FormLabel>Destination Features</FormLabel>
@@ -388,8 +473,19 @@ export function EditForm() {
             </FormItem>
           )}
         />
-        {/* Submit Button */}
-        <Button type="submit">Submit</Button>
+
+        <div className="flex justify-end space-x-2">
+          <Button type="submit" disabled={isLoading.editSingleDestination}>
+            {isLoading.editSingleDestination ? (
+              <>
+                <Loader2 className="animate-spin mr-2" />
+                Submitting...
+              </>
+            ) : (
+              'Submit'
+            )}
+          </Button>
+        </div>
       </form>
     </Form>
   );

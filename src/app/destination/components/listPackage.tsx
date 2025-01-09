@@ -2,7 +2,7 @@ import React from 'react';
 import { Card } from '@/components/ui/card'; // Adjust import paths as necessary
 import { ScrollArea } from '@/components/ui/scroll-area'; // Adjust import paths as necessary
 import { MapPin, Star } from 'lucide-react';
-import { countriesOptions } from '@/components/constant/dropdown';
+import { countriesOptions } from '@/constant/dropdown';
 
 // Define a type for the card data
 interface CardData {
@@ -62,7 +62,7 @@ const ListPackage: React.FC<ListCardProps> = ({
                       // Image on top in grid view
                       <div className="relative mb-3">
                         <img
-                          src={item.imageUrl}
+                          src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/${process.env.NEXT_PUBLIC_STORAGE_DIRECTORY}/${item.image_1_url}`}
                           alt={item.name}
                           className="object-cover w-full h-20 rounded-xl"
                         />
@@ -72,7 +72,7 @@ const ListPackage: React.FC<ListCardProps> = ({
                       <div className="relative mr-3">
                         {/* Add margin right for spacing */}
                         <img
-                          src={item.imageUrl}
+                          src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/${process.env.NEXT_PUBLIC_STORAGE_DIRECTORY}/${item.image_1_url}`}
                           alt={item.name}
                           className="object-cover w-20 h-20 rounded-xl" // Adjust size for list view
                         />
