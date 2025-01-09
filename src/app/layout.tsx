@@ -13,6 +13,7 @@ import { AppSidebar } from '@/components/app-sidebar';
 import Header from './dashboard/header';
 import GlobalDialog from '@/components/global-dialog';
 import { ApiProvider } from '@/context/apiContext';
+import NavBar from '@/components/navBar';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -36,6 +37,8 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname(); // Get current pathname
 
+  const showNavebarRoutes = ['/login', '/signup', '/'];
+
   // Define routes where sidebar should be visible
   const showSidebarRoutes = [
     '/dashboard',
@@ -46,6 +49,8 @@ export default function RootLayout({
     '/guider',
     '/chat',
   ]; // Example routes
+
+  const showNavbar = showNavebarRoutes.includes(pathname);
 
   // Determine if sidebar should be shown based on current route
   const showSidebar = showSidebarRoutes.includes(pathname);
@@ -64,6 +69,7 @@ export default function RootLayout({
                 enableSystem
                 disableTransitionOnChange
               >
+                {showNavbar && <NavBar />}
                 <div className="flex">
                   {showSidebar ? (
                     <SidebarProvider>

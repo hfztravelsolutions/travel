@@ -102,7 +102,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="w-full flex flex-col">
-      <Navbar />
+      {/* <Navbar /> */}
       {/* Header Section */}
       <div
         className="relative bg-cover bg-center h-[550px]"
@@ -149,11 +149,15 @@ const Home: React.FC = () => {
 
       {/* Popular Destinations Section */}
       <div className="w-full px-4 py-12">
-        <CardHeader>
-          <CardTitle className="text-4xl font-semibold text-center mb-6">
-            Popular Destinations
-          </CardTitle>
-        </CardHeader>
+        <h2 className="text-3xl font-bold text-center mb-4">
+          Popular Destinations
+        </h2>
+        <p className="text-muted-foreground text-center mb-4">
+          We offer personalized travel experiences tailored to your preferences.
+          Our dedicated team ensures that every trip is memorable and
+          hassle-free.
+        </p>
+
         <Separator className="my-6 mx-auto w-16" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {destinations.map((destination, index) => (
@@ -169,8 +173,10 @@ const Home: React.FC = () => {
 
               <CardContent className="p-4">
                 <h3 className="text-xl font-semibold">{destination.name}</h3>
-                <p className="text-gray-600 mb-2">{destination.duration}</p>
-                <p className="text-gray-600">{destination.price}</p>
+                <p className="text-muted-foreground mb-2">
+                  {destination.duration}
+                </p>
+                <p className="text-muted-foreground">{destination.price}</p>
               </CardContent>
             </Card>
           ))}
@@ -178,7 +184,7 @@ const Home: React.FC = () => {
       </div>
 
       {/* Why Choose Us Section */}
-      <section className="flex flex-col md:flex-row items-start w-full px-4 py-12 bg-gray-50">
+      <section className="flex flex-col md:flex-row items-start w-full px-4 py-12">
         {/* Image Side */}
         <div className="md:w-1/2 mb-6 md:mb-auto">
           {/* You can replace this with a relevant image */}
@@ -192,7 +198,7 @@ const Home: React.FC = () => {
         {/* Content Side */}
         <div className="md:w-1/2 md:pl-8">
           <h2 className="text-3xl font-bold mb-4">Why Choose Us?</h2>
-          <p className="text-gray-700 mb-4">
+          <p className="text-muted-foreground mb-4">
             We offer personalized travel experiences tailored to your
             preferences. Our dedicated team ensures that every trip is memorable
             and hassle-free.
@@ -205,7 +211,7 @@ const Home: React.FC = () => {
                 {benefit.icon}
                 <div className="ml-4">
                   <h3 className="font-semibold">{benefit.title}</h3>
-                  <p className="text-gray-600">{benefit.description}</p>
+                  <p className="text-muted-foreground">{benefit.description}</p>
                 </div>
               </Card>
             ))}
@@ -214,9 +220,9 @@ const Home: React.FC = () => {
       </section>
 
       {/* Plan Your Vacation Section */}
-      <section className="w-full px-4 py-12 bg-white text-center">
+      <section className="w-full px-4 py-12 text-center">
         <h2 className="text-3xl font-bold mb-4">Plan Your Vacation</h2>
-        <p className="text-gray-700 mb-6">
+        <p className="text-muted-foreground mb-6">
           We offer personalized travel experiences tailored to your preferences.
           Our dedicated team ensures that every trip is memorable and
           hassle-free.
@@ -231,7 +237,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-100 text-gray-800 text-center py-6 mt-auto">
+      <footer className="text-muted-foreground text-center py-6 mt-auto">
         <div className="flex justify-center gap-4 mb-4">
           <a href="#" className="text-gray-600 hover:text-gray-800">
             Facebook
