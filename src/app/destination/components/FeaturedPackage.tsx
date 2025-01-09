@@ -7,7 +7,7 @@ import {
   Calendar as CalendarIcon,
   EllipsisVertical,
 } from 'lucide-react';
-import { countriesOptions } from '@/components/constant/dropdown';
+import { countriesOptions } from '@/constant/dropdown';
 import { useMyContext } from '@/context/myContext';
 
 interface data {
@@ -54,7 +54,7 @@ const FeaturedPackage: React.FC<FeaturedPackageProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
           <div className="relative">
             <img
-              src="https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0"
+              src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/${process.env.NEXT_PUBLIC_STORAGE_DIRECTORY}/${data.image_1_url}`}
               alt="Image"
               className="object-cover w-full h-full rounded-xl"
             />

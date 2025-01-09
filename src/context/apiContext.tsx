@@ -12,6 +12,12 @@ import {
   getBookingApi,
   deleteSingleBookingApi,
   editSingleBookingApi,
+  addSingleGuiderApi,
+  addMultipleGuiderApi,
+  getGuiderApi,
+  deleteSingleGuiderApi,
+  editSingleGuiderApi,
+  filterAllUserApi,
 } from '@/api/global/actions';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import toast from 'react-hot-toast';
@@ -21,6 +27,7 @@ const API_NAMES = {
   FETCH_DESTINATION: 'fetchDestination',
   FETCH_CALENDAR: 'fetchCalendar',
   FETCH_BOOKING: 'fetchBooking',
+  FETCH_GUIDER: 'fetchGuider',
   ADD_SINGLE_DESTINATION: 'addSingleDestination',
   EDIT_SINGLE_DESTINATION: 'editSingleDestination',
   DELETE_SINGLE_DESTINATION: 'deleteSingleDestination',
@@ -30,6 +37,11 @@ const API_NAMES = {
   ADD_SINGLE_BOOKING: 'addSingleBooking',
   DELETE_SINGLE_BOOKING: 'deleteSingleBooking',
   EDIT_SINGLE_BOOKING: 'editSingleBooking',
+  ADD_SINGLE_GUIDER: 'addSingleGuider',
+  ADD_MULTIPLE_GUIDER: 'addMultipleGuider',
+  DELETE_SINGLE_GUIDER: 'deleteSingleGuider',
+  EDIT_SINGLE_GUIDER: 'editSingleGuider',
+  FILTER_ALL_USER: 'filterAllUser',
 };
 
 const ApiContext = createContext<ApiContext | undefined>(undefined);
@@ -47,7 +59,12 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({
   const [bookingData, setBookingData] = useState<Record<string, any>[] | null>(
     null
   );
-
+  const [guiderData, setGuiderData] = useState<Record<string, any>[] | null>(
+    null
+  );
+  const [filterAllUserData, setFilterAllUserData] = useState<
+    Record<string, any>[]
+  >([]);
   const [isLoading, setIsLoading] = useState<Record<string, boolean>>({});
 
   const setLoading = (apiName: string, loading: boolean) => {
@@ -110,8 +127,16 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({
     );
   };
 
+  const fetchGuider = () => {
+    fetchData(
+      () => getGuiderApi({ userId: userData?.id }),
+      setGuiderData,
+      API_NAMES.FETCH_GUIDER
+    );
+  };
+
   const addSingleDestination = async (params) => {
-    return await fetchData(
+    const result = await fetchData(
       () => addSingleDestinationApi({ ...params, userId: userData?.id }),
       (data) => {
         if (destinationData) {
@@ -123,11 +148,13 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({
       },
       API_NAMES.ADD_SINGLE_DESTINATION
     );
+
+    return result;
   };
 
   const editSingleDestination = async (id: string, params) => {
     return await fetchData(
-      () => editSingleDestinationApi({ id, ...params }),
+      () => editSingleDestinationApi({ id, ...params, userId: userData?.id }),
       (data) => {
         if (destinationData) {
           const updatedDestinations = destinationData.map((destination) =>
@@ -260,6 +287,77 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({
     );
   };
 
+  const addSingleGuider = async (params) => {
+    return await fetchData(
+      () => addSingleGuiderApi({ ...params, userId: userData?.id }),
+      (data) => {
+        if (guiderData) {
+          setGuiderData([data, ...guiderData]);
+        } else {
+          setGuiderData([data]);
+        }
+        toast.success('Success!');
+      },
+      API_NAMES.ADD_SINGLE_GUIDER
+    );
+  };
+
+  const addMultipleGuider = async (params) => {
+    return await fetchData(
+      () => addMultipleGuiderApi({ ...params, userId: userData?.id }),
+      (data) => {
+        if (guiderData) {
+          setGuiderData([data, ...guiderData]);
+        } else {
+          setGuiderData([data]);
+        }
+        toast.success('Success!');
+      },
+      API_NAMES.ADD_MULTIPLE_GUIDER
+    );
+  };
+
+  const deleteSingleGuider = async (id: string) => {
+    return await fetchData(
+      () => deleteSingleGuiderApi({ id }),
+      (data) => {
+        if (guiderData) {
+          const updatedGuiders = guiderData.filter(
+            (guider) => String(guider.id) !== String(id)
+          );
+
+          setGuiderData(updatedGuiders);
+        }
+        toast.success('Deleted!');
+      },
+      API_NAMES.DELETE_SINGLE_GUIDER
+    );
+  };
+
+  const editSingleGuider = async (id: string, params) => {
+    return await fetchData(
+      () => editSingleGuiderApi({ id, ...params }),
+      (data) => {
+        if (guiderData) {
+          const updatedGuiders = guiderData.map((guider) =>
+            String(guider.id) === String(id) ? { ...guider, ...data } : guider
+          );
+          setGuiderData(updatedGuiders);
+        }
+        toast.success('Updated!');
+      },
+      API_NAMES.EDIT_SINGLE_GUIDER
+    );
+  };
+
+  const filterAllUser = (params) => {
+    fetchData(
+      () => filterAllUserApi(params),
+      setFilterAllUserData,
+      API_NAMES.FILTER_ALL_USER
+    );
+  };
+
   return (
     <ApiContext.Provider
       value={{
@@ -273,6 +371,7 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({
         fetchDestination,
         fetchCalendar,
         fetchBooking,
+        fetchGuider,
         setCalendarData,
         calendarData,
         addSingleDestination,
@@ -286,6 +385,14 @@ export const ApiProvider: React.FC<{ children: ReactNode }> = ({
         bookingData,
         deleteSingleBooking,
         editSingleBooking,
+        addSingleGuider,
+        addMultipleGuider,
+        setGuiderData,
+        guiderData,
+        deleteSingleGuider,
+        editSingleGuider,
+        filterAllUser,
+        filterAllUserData,
       }}
     >
       {children}

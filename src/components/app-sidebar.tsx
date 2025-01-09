@@ -18,6 +18,7 @@ import {
   CalendarCheck,
   Megaphone,
   Users,
+  MessageCircleMore,
 } from 'lucide-react';
 
 import { NavMain } from '@/components/nav-main';
@@ -152,14 +153,14 @@ const data = {
       icon: House,
     },
     {
-      name: 'Destinasi',
-      url: 'destination',
-      icon: Plane,
-    },
-    {
       name: 'Tempahan',
       url: 'booking',
       icon: StretchHorizontal,
+    },
+    {
+      name: 'Destinasi',
+      url: 'destination',
+      icon: Plane,
     },
     {
       name: 'Kalendar',
@@ -175,6 +176,11 @@ const data = {
       name: 'Pemandu Pelancong',
       url: 'guider',
       icon: Users,
+    },
+    {
+      name: 'Chat',
+      url: 'chat',
+      icon: MessageCircleMore,
     },
   ],
 };

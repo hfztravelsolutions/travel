@@ -44,6 +44,7 @@ export default function RootLayout({
     '/destination',
     '/feedback',
     '/guider',
+    '/chat',
   ]; // Example routes
 
   // Determine if sidebar should be shown based on current route

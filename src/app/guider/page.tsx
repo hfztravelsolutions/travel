@@ -1,15 +1,16 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/app-sidebar';
 
 import { toast } from 'react-hot-toast';
 import { Calendar } from '@/components/ui/calendar';
-import ChartCard from './chartCard';
-import MainCard from './mainCard';
+import BookingChart from './components/bookingChart';
+
+import MainCard from '../../components/mainCard';
 import { logout } from '../login/actions';
-import { Button } from '@/components/ui/button';
+import { useMyContext } from '@/context/myContext';
 import {
   Pencil,
   CircleCheck,
@@ -21,37 +22,52 @@ import {
   PhoneCall,
   Ellipsis,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useApiContext } from '@/context/apiContext';
+import { GuiderTable } from './components/guiderTable';
+import GuiderModal from './components/guiderModal';
 import { Badge } from '@/components/ui/badge';
-import { BookingTable } from '../booking/components/bookingTable';
 
 const Page: React.FC = () => {
-  const [date, setDate] = React.useState<Date | undefined>(new Date());
+  const { setGuiderModal, setDestinationModal } = useMyContext();
+  const { userData, fetchUser, fetchDestination } = useApiContext();
 
-  const notifications = [
-    {
-      title: 'Berpengalaman',
-      description: 'Bimbingan ibadah lengkap dan informatif.',
-    },
-    {
-      title: 'Pakej Fleksibel',
-      description: 'Pilihan pakej premium hingga ekonomi.',
-    },
-    {
-      title: 'Ziarah Tambahan',
-      description:
-        'Lawatan eksklusif ke lokasi bersejarah seperti Taif dan Badar.',
-    },
-    {
-      title: 'Kursus Percuma',
-      description: 'Persediaan ibadah melalui kursus umrah percuma.',
-    },
-  ];
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    if (userData) {
+      fetchDestination();
+    }
+  }, [userData]);
+
+  const handleButtonClick = () => {
+    setGuiderModal((prevState: { toggle: any }) => ({
+      ...prevState,
+      key: 'add',
+      toggle: !prevState.toggle,
+    }));
+  };
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+      <GuiderModal />
+      {/* <GuiderModal /> */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="md:col-span-2">
-          <BookingTable />
+          <MainCard
+            title="Guider"
+            rightView={
+              <>
+                <Button onClick={handleButtonClick}>
+                  <Plus /> Add Guider
+                </Button>
+              </>
+            }
+          >
+            <GuiderTable />
+          </MainCard>
         </div>
         <div className="md:col-span-1">
           <MainCard showHeader={false}>

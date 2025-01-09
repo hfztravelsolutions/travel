@@ -23,7 +23,7 @@ import {
   SelectItem,
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import { countriesOptions } from '@/components/constant/dropdown';
+import { countriesOptions } from '@/constant/dropdown';
 import { useApiContext } from '@/context/apiContext';
 import { useMyContext } from '@/context/myContext';
 import { Card, CardContent } from '@/components/ui/card';
